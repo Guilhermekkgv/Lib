@@ -326,7 +326,7 @@ function Linux:Create(config)
             Textbox.TextColor3 = Color3.fromRGB(255, 255, 255)
             Textbox.TextSize = 14
             Textbox.Font = Enum.Font.Gotham
-            Textbox.TextTruncate = Enum.TextTruncate.AtEnd
+            Textbox.ClearTextOnFocus = false
             Textbox.Parent = TextboxFrame
             
             local TextboxCornerInner = Instance.new("UICorner")
@@ -401,6 +401,8 @@ function Linux:Create(config)
             ListLayout.Parent = DropdownList
             
             local isOpen = false
+            local TweenService = game:GetService("TweenService")
+            local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
             
             for i, option in pairs(options) do
                 local OptionButton = Instance.new("TextButton")
@@ -415,9 +417,10 @@ function Linux:Create(config)
                 
                 OptionButton.MouseButton1Click:Connect(function()
                     DropdownButton.Text = option
-                    DropdownList.Visible = false
                     isOpen = false
-                    DropdownList.Size = UDim2.new(0, 150, 0, 0)
+                    TweenService:Create(DropdownList, tweenInfo, {Size = UDim2.new(0, 150, 0, 0)}):Play()
+                    task.wait(0.2)
+                    DropdownList.Visible = false
                     callback(option)
                 end)
             end
@@ -427,10 +430,11 @@ function Linux:Create(config)
             DropdownButton.MouseButton1Click:Connect(function()
                 isOpen = not isOpen
                 if isOpen then
-                    DropdownList.Size = UDim2.new(0, 150, 0, math.min(#options * 25, 150))
                     DropdownList.Visible = true
+                    TweenService:Create(DropdownList, tweenInfo, {Size = UDim2.new(0, 150, 0, math.min(#options * 25, 150))}):Play()
                 else
-                    DropdownList.Size = UDim2.new(0, 150, 0, 0)
+                    TweenService:Create(DropdownList, tweenInfo, {Size = UDim2.new(0, 150, 0, 0)}):Play()
+                    task.wait(0.2)
                     DropdownList.Visible = false
                 end
             end)
