@@ -110,10 +110,10 @@ function Linux:Create(config)
         
         local Tab = {}
         
-        function Tab:Toggle(name, default, callback)
+        function Tab:Toggle(name, default, callback, description)
             local ToggleFrame = Instance.new("Frame")
-            ToggleFrame.Size = UDim2.new(1, -10, 0, 40)
-            ToggleFrame.Position = UDim2.new(0, 5, 0, #TabContent:GetChildren() * 45)
+            ToggleFrame.Size = UDim2.new(1, -10, 0, description and 55 or 40)
+            ToggleFrame.Position = UDim2.new(0, 5, 0, #TabContent:GetChildren() * (description and 60 or 45))
             ToggleFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             ToggleFrame.BorderSizePixel = 0
             ToggleFrame.Parent = TabContent
@@ -123,8 +123,8 @@ function Linux:Create(config)
             ToggleCorner.Parent = ToggleFrame
             
             local ToggleLabel = Instance.new("TextLabel")
-            ToggleLabel.Size = UDim2.new(0, 350, 1, 0)
-            ToggleLabel.Position = UDim2.new(0, 15, 0, 0)
+            ToggleLabel.Size = UDim2.new(0, 350, 0, 20)
+            ToggleLabel.Position = UDim2.new(0, 15, 0, 5)
             ToggleLabel.BackgroundTransparency = 1
             ToggleLabel.Text = name
             ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -133,9 +133,22 @@ function Linux:Create(config)
             ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
             ToggleLabel.Parent = ToggleFrame
             
+            if description then
+                local DescriptionLabel = Instance.new("TextLabel")
+                DescriptionLabel.Size = UDim2.new(0, 350, 0, 20)
+                DescriptionLabel.Position = UDim2.new(0, 15, 0, 25)
+                DescriptionLabel.BackgroundTransparency = 1
+                DescriptionLabel.Text = description
+                DescriptionLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+                DescriptionLabel.TextSize = 12
+                DescriptionLabel.Font = Enum.Font.Gotham
+                DescriptionLabel.TextXAlignment = Enum.TextXAlignment.Left
+                DescriptionLabel.Parent = ToggleFrame
+            end
+            
             local ToggleSwitch = Instance.new("Frame")
             ToggleSwitch.Size = UDim2.new(0, 50, 0, 25)
-            ToggleSwitch.Position = UDim2.new(1, -65, 0.5, -12.5)
+            ToggleSwitch.Position = UDim2.new(1, -65, 0, description and 15 or 7.5)
             ToggleSwitch.BackgroundColor3 = default and Color3.fromRGB(100, 150, 255) or Color3.fromRGB(50, 50, 50)
             ToggleSwitch.BorderSizePixel = 0
             ToggleSwitch.Parent = ToggleFrame
