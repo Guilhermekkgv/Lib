@@ -1,9 +1,7 @@
-local Linux = {}
-local Flipper = require(game.ReplicatedStorage:WaitForChild("Flipper") or loadstring("https://raw.githubusercontent.com/dawid-scripts/Flipper/master/Flipper.lua")())
+local NovaLib = {}
 local TweenService = game:GetService("TweenService")
-
-local Spring = Flipper.Spring.new
-local Instant = Flipper.Instant.new
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
 
 local function New(class, props)
     local obj = Instance.new(class)
@@ -18,318 +16,367 @@ local function New(class, props)
     return obj
 end
 
-function Linux:CreateWindow(config)
-    local ScreenGui = New("ScreenGui", {Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui"), ResetOnSpawn = false})
+function NovaLib:NovaJanela(config)
+    local ScreenGui = New("ScreenGui", {Parent = Players.LocalPlayer:WaitForChild("PlayerGui"), ResetOnSpawn = false})
     
-    local MainFrame = New("Frame", {
-        Size = config.Size or UDim2.fromOffset(600, 400),
-        Position = UDim2.new(0.5, -300, 0.5, -200),
-        BackgroundColor3 = Color3.fromRGB(26, 26, 26),
+    local Janela = New("Frame", {
+        Size = config.Tamanho or UDim2.fromOffset(550, 350),
+        Position = UDim2.new(0.5, -275, 0.5, -175),
+        BackgroundColor3 = Color3.fromRGB(25, 25, 25),
         BorderSizePixel = 0,
         Active = true,
         Draggable = true,
         Parent = ScreenGui
     })
-    New("UICorner", {CornerRadius = UDim.new(0, 8), Parent = MainFrame})
+    New("UICorner", {CornerRadius = UDim.new(0, 8), Parent = Janela})
     
-    local TopBar = New("Frame", {
-        Size = UDim2.new(1, 0, 0, 40),
-        BackgroundColor3 = Color3.fromRGB(32, 32, 32),
+    local Topo = New("Frame", {
+        Size = UDim2.new(1, 0, 0, 35),
+        BackgroundColor3 = Color3.fromRGB(30, 30, 30),
         BorderSizePixel = 0,
-        Parent = MainFrame
+        Parent = Janela
     })
-    New("UICorner", {CornerRadius = UDim.new(0, 8), Parent = TopBar})
+    New("UICorner", {CornerRadius = UDim.new(0, 8), Parent = Topo})
     
-    local Title = New("TextLabel", {
-        Size = UDim2.new(1, -20, 1, 0),
+    New("TextLabel", {
+        Size = UDim2.new(1, -15, 1, 0),
         Position = UDim2.new(0, 10, 0, 0),
         BackgroundTransparency = 1,
-        Text = config.Title or "Linux Hub",
-        TextColor3 = Color3.fromRGB(240, 240, 240),
-        TextSize = 16,
+        Text = config.Nome or "NovaLib",
+        TextColor3 = Color3.fromRGB(230, 230, 230),
+        TextSize = 15,
         FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold),
         TextXAlignment = Enum.TextXAlignment.Left,
-        Parent = TopBar
+        Parent = Topo
     })
     
-    local TabHolder = New("ScrollingFrame", {
-        Size = UDim2.new(0, 120, 1, -50),
-        Position = UDim2.new(0, 10, 0, 50),
+    local AbasHolder = New("ScrollingFrame", {
+        Size = UDim2.new(0, 110, 1, -45),
+        Position = UDim2.new(0, 10, 0, 45),
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
         ScrollBarThickness = 0,
         CanvasSize = UDim2.new(0, 0, 0, 0),
-        Parent = MainFrame
+        Parent = Janela
     })
     
-    local ContainerCanvas = New("Frame", {
-        Size = UDim2.new(1, -140, 1, -50),
-        Position = UDim2.new(0, 130, 0, 50),
-        BackgroundTransparency = 1,
-        Parent = MainFrame
-    })
-    
-    local ContainerHolder = New("ScrollingFrame", {
-        Size = UDim2.fromScale(1, 1),
+    local ConteudoHolder = New("ScrollingFrame", {
+        Size = UDim2.new(1, -125, 1, -45),
+        Position = UDim2.new(0, 125, 0, 45),
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
         ScrollBarThickness = 3,
         ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255),
-        ScrollBarImageTransparency = 0.95,
-        CanvasSize = UDim2.fromScale(0, 0),
-        Parent = ContainerCanvas
+        ScrollBarImageTransparency = 0.9,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        Parent = Janela
     })
-    New("UIPadding", {PaddingRight = UDim.new(0, 10), PaddingLeft = UDim.new(0, 1), PaddingTop = UDim.new(0, 1), PaddingBottom = UDim.new(0, 1), Parent = ContainerHolder})
+    New("UIPadding", {PaddingRight = UDim.new(0, 8), PaddingLeft = UDim.new(0, 2), PaddingTop = UDim.new(0, 2), PaddingBottom = UDim.new(0, 2), Parent = ConteudoHolder})
     
-    local Window = {Tabs = {}, Containers = {}, SelectedTab = 0, TabCount = 0}
-    Window.TabHolder = TabHolder
-    Window.ContainerHolder = ContainerHolder
-    Window.ContainerCanvas = ContainerCanvas
+    local Window = {Abas = {}, Conteudos = {}, AbaSelecionada = 0, TotalAbas = 0, Janela = Janela, AbasHolder = AbasHolder, ConteudoHolder = ConteudoHolder}
     
-    function Window:AddTab(config)
-        self.TabCount = self.TabCount + 1
-        local TabIndex = self.TabCount
+    function Window:NovaAba(config)
+        self.TotalAbas = self.TotalAbas + 1
+        local AbaIndex = self.TotalAbas
         
-        local Tab = {Name = config.Title}
+        local Aba = {Nome = config.Nome}
         
-        Tab.Frame = New("TextButton", {
-            Size = UDim2.new(1, 0, 0, 34),
-            BackgroundColor3 = Color3.fromRGB(120, 120, 120),
-            BackgroundTransparency = 1,
-            Text = "",
-            Parent = TabHolder
-        })
-        New("UICorner", {CornerRadius = UDim.new(0, 6), Parent = Tab.Frame})
-        
-        local Icon = config.Icon and New("ImageLabel", {
-            Size = UDim2.fromOffset(16, 16),
-            Position = UDim2.new(0, 8, 0.5, 0),
-            AnchorPoint = Vector2.new(0, 0.5),
-            BackgroundTransparency = 1,
-            Image = config.Icon,
-            ImageColor3 = Color3.fromRGB(240, 240, 240),
-            Parent = Tab.Frame
-        })
-        
-        New("TextLabel", {
-            AnchorPoint = Vector2.new(0, 0.5),
-            Position = Icon and UDim2.new(0, 30, 0.5, 0) or UDim2.new(0, 12, 0.5, 0),
-            Text = config.Title,
-            TextColor3 = Color3.fromRGB(240, 240, 240),
-            TextSize = 12,
+        Aba.Botao = New("TextButton", {
+            Size = UDim2.new(1, -5, 0, 32),
+            BackgroundColor3 = Color3.fromRGB(35, 35, 35),
+            Text = config.Nome,
+            TextColor3 = Color3.fromRGB(230, 230, 230),
+            TextSize = 13,
             FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"),
             TextXAlignment = Enum.TextXAlignment.Left,
-            Size = UDim2.new(1, -12, 1, 0),
-            BackgroundTransparency = 1,
-            Parent = Tab.Frame
+            Position = UDim2.new(0, 5, 0, (AbaIndex - 1) * 38),
+            Parent = AbasHolder
         })
+        New("UICorner", {CornerRadius = UDim.new(0, 6), Parent = Aba.Botao})
         
-        local ContainerLayout = New("UIListLayout", {Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder})
-        Tab.Container = New("ScrollingFrame", {
+        local ConteudoLayout = New("UIListLayout", {Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder})
+        Aba.Conteudo = New("ScrollingFrame", {
             Size = UDim2.fromScale(1, 1),
             BackgroundTransparency = 1,
-            Parent = ContainerHolder,
+            Parent = ConteudoHolder,
             Visible = false,
             ScrollBarThickness = 3,
             ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255),
-            ScrollBarImageTransparency = 0.95,
-            CanvasSize = UDim2.fromScale(0, 0),
-        }, {ContainerLayout, New("UIPadding", {PaddingRight = UDim.new(0, 10), PaddingLeft = UDim.new(0, 1), PaddingTop = UDim.new(0, 1), PaddingBottom = UDim.new(0, 1)})})
+            ScrollBarImageTransparency = 0.9,
+            CanvasSize = UDim2.new(0, 0, 0, 0)
+        }, {ConteudoLayout, New("UIPadding", {PaddingRight = UDim.new(0, 8), PaddingLeft = UDim.new(0, 2), PaddingTop = UDim.new(0, 2), PaddingBottom = UDim.new(0, 2)})})
         
-        ContainerLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            Tab.Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y + 2)
+        ConteudoLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            Aba.Conteudo.CanvasSize = UDim2.new(0, 0, 0, ConteudoLayout.AbsoluteContentSize.Y + 4)
         end)
         
-        local Motor, SetTransparency = function(initial, target) 
-            local motor = Flipper.SingleMotor.new(initial)
-            motor:onStep(function(value) target.BackgroundTransparency = value end)
-            return motor, function(value) motor:setGoal(Spring(value, {frequency = 6})) end
-        end
-        Tab.Motor, Tab.SetTransparency = Motor(1, Tab.Frame)
+        Aba.Botao.MouseButton1Click:Connect(function()
+            self:SelecionarAba(AbaIndex)
+        end)
         
-        Tab.Frame.MouseEnter:Connect(function() Tab.SetTransparency(Tab.Selected and 0.85 or 0.89) end)
-        Tab.Frame.MouseLeave:Connect(function() Tab.SetTransparency(Tab.Selected and 0.89 or 1) end)
-        Tab.Frame.MouseButton1Down:Connect(function() Tab.SetTransparency(0.92) end)
-        Tab.Frame.MouseButton1Up:Connect(function() Tab.SetTransparency(Tab.Selected and 0.85 or 0.89) end)
-        Tab.Frame.MouseButton1Click:Connect(function() self:SelectTab(TabIndex) end)
+        self.Abas[AbaIndex] = Aba
+        self.Conteudos[AbaIndex] = Aba.Conteudo
+        AbasHolder.CanvasSize = UDim2.new(0, 0, 0, self.TotalAbas * 38)
         
-        self.Tabs[TabIndex] = Tab
-        self.Containers[TabIndex] = Tab.Container
-        TabHolder.CanvasSize = UDim2.new(0, 0, 0, self.TabCount * 40)
+        if AbaIndex == 1 then self:SelecionarAba(1) end
         
-        if TabIndex == 1 then self:SelectTab(1) end
-        
-        function Tab:AddSection(title)
-            local SectionFrame = New("Frame", {BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 26), Parent = Tab.Container})
-            local SectionLayout = New("UIListLayout", {Padding = UDim.new(0, 5), Parent = SectionFrame})
-            local SectionContainer = New("Frame", {Size = UDim2.new(1, 0, 0, 26), Position = UDim2.fromOffset(0, 24), BackgroundTransparency = 1, Parent = SectionFrame}, {SectionLayout})
-            New("TextLabel", {Text = title, TextColor3 = Color3.fromRGB(240, 240, 240), TextSize = 18, FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold), TextXAlignment = Enum.TextXAlignment.Left, Size = UDim2.new(1, -16, 0, 18), Position = UDim2.fromOffset(0, 2), BackgroundTransparency = 1, Parent = SectionFrame})
+        function Aba:NovaSecao(titulo)
+            local SecaoFrame = New("Frame", {BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 25), Parent = Aba.Conteudo})
+            local SecaoLayout = New("UIListLayout", {Padding = UDim.new(0, 6), Parent = SecaoFrame})
+            local SecaoConteudo = New("Frame", {Size = UDim2.new(1, 0, 0, 25), Position = UDim2.fromOffset(0, 25), BackgroundTransparency = 1, Parent = SecaoFrame}, {SecaoLayout})
+            New("TextLabel", {Text = titulo, TextColor3 = Color3.fromRGB(230, 230, 230), TextSize = 17, FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold), TextXAlignment = Enum.TextXAlignment.Left, Size = UDim2.new(1, -15, 0, 17), Position = UDim2.fromOffset(0, 2), BackgroundTransparency = 1, Parent = SecaoFrame})
             
-            SectionLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-                SectionContainer.Size = UDim2.new(1, 0, 0, SectionLayout.AbsoluteContentSize.Y)
-                SectionFrame.Size = UDim2.new(1, 0, 0, SectionLayout.AbsoluteContentSize.Y + 25)
+            SecaoLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+                SecaoConteudo.Size = UDim2.new(1, 0, 0, SecaoLayout.AbsoluteContentSize.Y)
+                SecaoFrame.Size = UDim2.new(1, 0, 0, SecaoLayout.AbsoluteContentSize.Y + 25)
             end)
             
-            local Section = {Container = SectionContainer}
+            local Secao = {Conteudo = SecaoConteudo}
             
-            function Section:AddToggle(config)
-                local ToggleFrame = New("Frame", {Size = UDim2.new(1, -10, 0, 40), Position = UDim2.new(0, 5, 0, #SectionContainer:GetChildren() * 50), BackgroundColor3 = Color3.fromRGB(120, 120, 120), BackgroundTransparency = 0.87, Parent = SectionContainer})
+            function Secao:NovoToggle(config)
+                local ToggleFrame = New("Frame", {
+                    Size = UDim2.new(1, -10, 0, 38),
+                    Position = UDim2.new(0, 5, 0, #SecaoConteudo:GetChildren() * 44),
+                    BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+                    Parent = SecaoConteudo
+                })
                 New("UICorner", {CornerRadius = UDim.new(0, 6), Parent = ToggleFrame})
-                New("UIStroke", {Transparency = 0.5, Color = Color3.fromRGB(90, 90, 90), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Parent = ToggleFrame})
                 
-                New("TextLabel", {Text = config.Title, TextColor3 = Color3.fromRGB(240, 240, 240), TextSize = 14, FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"), TextXAlignment = Enum.TextXAlignment.Left, Size = UDim2.new(1, -60, 1, 0), Position = UDim2.new(0, 10, 0, 0), BackgroundTransparency = 1, Parent = ToggleFrame})
+                New("TextLabel", {
+                    Text = config.Nome,
+                    TextColor3 = Color3.fromRGB(230, 230, 230),
+                    TextSize = 13,
+                    FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"),
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Size = UDim2.new(1, -55, 1, 0),
+                    Position = UDim2.new(0, 8, 0, 0),
+                    BackgroundTransparency = 1,
+                    Parent = ToggleFrame
+                })
                 
-                local ToggleSwitch = New("Frame", {Size = UDim2.new(0, 40, 0, 20), Position = UDim2.new(1, -50, 0.5, -10), BackgroundColor3 = config.Default and Color3.fromRGB(96, 205, 255) or Color3.fromRGB(120, 120, 120), Parent = ToggleFrame})
-                New("UICorner", {CornerRadius = UDim.new(0, 10), Parent = ToggleSwitch})
+                local Switch = New("Frame", {
+                    Size = UDim2.new(0, 38, 0, 18),
+                    Position = UDim2.new(1, -45, 0.5, -9),
+                    BackgroundColor3 = config.Default and Color3.fromRGB(100, 200, 255) or Color3.fromRGB(50, 50, 50),
+                    Parent = ToggleFrame
+                })
+                New("UICorner", {CornerRadius = UDim.new(0, 9), Parent = Switch})
                 
-                local ToggleKnob = New("Frame", {Size = UDim2.new(0, 16, 0, 16), Position = config.Default and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8), BackgroundColor3 = Color3.fromRGB(255, 255, 255), Parent = ToggleSwitch})
-                New("UICorner", {CornerRadius = UDim.new(0, 8), Parent = ToggleKnob})
+                local Knob = New("Frame", {
+                    Size = UDim2.new(0, 14, 0, 14),
+                    Position = config.Default and UDim2.new(1, -16, 0.5, -7) or UDim2.new(0, 2, 0.5, -7),
+                    BackgroundColor3 = Color3.fromRGB(230, 230, 230),
+                    Parent = Switch
+                })
+                New("UICorner", {CornerRadius = UDim.new(0, 7), Parent = Knob})
                 
-                local state = config.Default or false
-                ToggleSwitch.InputBegan:Connect(function(input)
+                local estado = config.Default or false
+                Switch.InputBegan:Connect(function(input)
                     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                        state = not state
-                        TweenService:Create(ToggleKnob, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Position = state and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)}):Play()
-                        TweenService:Create(ToggleSwitch, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {BackgroundColor3 = state and Color3.fromRGB(96, 205, 255) or Color3.fromRGB(120, 120, 120)}):Play()
-                        config.Callback(state)
+                        estado = not estado
+                        TweenService:Create(Knob, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Position = estado and UDim2.new(1, -16, 0.5, -7) or UDim2.new(0, 2, 0.5, -7)}):Play()
+                        TweenService:Create(Switch, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {BackgroundColor3 = estado and Color3.fromRGB(100, 200, 255) or Color3.fromRGB(50, 50, 50)}):Play()
+                        config.Callback(estado)
                     end
                 end)
                 
-                SectionContainer.Size = UDim2.new(1, 0, 0, SectionContainer.Size.Y.Offset + 50)
+                SecaoConteudo.Size = UDim2.new(1, 0, 0, SecaoConteudo.Size.Y.Offset + 44)
             end
             
-            function Section:AddDropdown(config)
-                local DropdownFrame = New("Frame", {Size = UDim2.new(1, -10, 0, 40), Position = UDim2.new(0, 5, 0, #SectionContainer:GetChildren() * 50), BackgroundColor3 = Color3.fromRGB(120, 120, 120), BackgroundTransparency = 0.87, Parent = SectionContainer})
+            function Secao:NovoDropdown(config)
+                local DropdownFrame = New("Frame", {
+                    Size = UDim2.new(1, -10, 0, 38),
+                    Position = UDim2.new(0, 5, 0, #SecaoConteudo:GetChildren() * 44),
+                    BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+                    Parent = SecaoConteudo
+                })
                 New("UICorner", {CornerRadius = UDim.new(0, 6), Parent = DropdownFrame})
-                New("UIStroke", {Transparency = 0.5, Color = Color3.fromRGB(90, 90, 90), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Parent = DropdownFrame})
                 
-                New("TextLabel", {Text = config.Title, TextColor3 = Color3.fromRGB(240, 240, 240), TextSize = 14, FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"), TextXAlignment = Enum.TextXAlignment.Left, Size = UDim2.new(1, -170, 1, 0), Position = UDim2.new(0, 10, 0, 0), BackgroundTransparency = 1, Parent = DropdownFrame})
+                New("TextLabel", {
+                    Text = config.Nome,
+                    TextColor3 = Color3.fromRGB(230, 230, 230),
+                    TextSize = 13,
+                    FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"),
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Size = UDim2.new(1, -155, 1, 0),
+                    Position = UDim2.new(0, 8, 0, 0),
+                    BackgroundTransparency = 1,
+                    Parent = DropdownFrame
+                })
                 
-                local DropdownInner = New("TextButton", {Size = UDim2.fromOffset(160, 30), Position = UDim2.new(1, -10, 0.5, 0), AnchorPoint = Vector2.new(1, 0.5), BackgroundColor3 = Color3.fromRGB(160, 160, 160), BackgroundTransparency = 0.9, Text = "", Parent = DropdownFrame})
-                New("UICorner", {CornerRadius = UDim.new(0, 5), Parent = DropdownInner})
-                New("UIStroke", {Transparency = 0.5, Color = Color3.fromRGB(90, 90, 90), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Parent = DropdownInner})
+                local DropdownBtn = New("TextButton", {
+                    Size = UDim2.fromOffset(145, 28),
+                    Position = UDim2.new(1, -150, 0.5, -14),
+                    BackgroundColor3 = Color3.fromRGB(50, 50, 50),
+                    Text = config.Default or config.Valores[1],
+                    TextColor3 = Color3.fromRGB(230, 230, 230),
+                    TextSize = 12,
+                    FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"),
+                    Parent = DropdownFrame
+                })
+                New("UICorner", {CornerRadius = UDim.new(0, 5), Parent = DropdownBtn})
+                New("ImageLabel", {Image = "rbxassetid://10709790948", Size = UDim2.fromOffset(14, 14), Position = UDim2.new(1, -20, 0.5, -7), AnchorPoint = Vector2.new(0, 0.5), BackgroundTransparency = 1, ImageColor3 = Color3.fromRGB(150, 150, 150), Parent = DropdownBtn})
                 
-                local DropdownDisplay = New("TextLabel", {Text = config.Default or config.Values[1], TextColor3 = Color3.fromRGB(240, 240, 240), TextSize = 13, FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"), TextXAlignment = Enum.TextXAlignment.Left, Size = UDim2.new(1, -30, 0, 14), Position = UDim2.new(0, 8, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), BackgroundTransparency = 1, Parent = DropdownInner})
-                New("ImageLabel", {Image = "rbxassetid://10709790948", Size = UDim2.fromOffset(16, 16), Position = UDim2.new(1, -8, 0.5, 0), AnchorPoint = Vector2.new(1, 0.5), BackgroundTransparency = 1, ImageColor3 = Color3.fromRGB(170, 170, 170), Parent = DropdownInner})
+                local DropdownHolder = New("Frame", {Size = UDim2.fromOffset(145, 0), BackgroundColor3 = Color3.fromRGB(45, 45, 45), Parent = ScreenGui, Visible = false})
+                New("UICorner", {CornerRadius = UDim.new(0, 6), Parent = DropdownHolder})
                 
-                local DropdownHolder = New("Frame", {Size = UDim2.fromOffset(170, 0), BackgroundColor3 = Color3.fromRGB(45, 45, 45), Parent = ScreenGui, Visible = false})
-                New("UICorner", {CornerRadius = UDim.new(0, 7), Parent = DropdownHolder})
-                New("UIStroke", {Color = Color3.fromRGB(35, 35, 35), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Parent = DropdownHolder})
+                local DropdownScroll = New("ScrollingFrame", {
+                    Size = UDim2.new(1, -5, 1, -8),
+                    Position = UDim2.fromOffset(4, 4),
+                    BackgroundTransparency = 1,
+                    ScrollBarThickness = 3,
+                    ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255),
+                    ScrollBarImageTransparency = 0.9,
+                    CanvasSize = UDim2.fromScale(0, 0),
+                    Parent = DropdownHolder
+                })
+                local DropdownLayout = New("UIListLayout", {Padding = UDim.new(0, 4), Parent = DropdownScroll})
                 
-                local DropdownScroll = New("ScrollingFrame", {Size = UDim2.new(1, -5, 1, -10), Position = UDim2.fromOffset(5, 5), BackgroundTransparency = 1, ScrollBarThickness = 4, ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255), ScrollBarImageTransparency = 0.95, CanvasSize = UDim2.fromScale(0, 0), Parent = DropdownHolder})
-                local DropdownListLayout = New("UIListLayout", {Padding = UDim.new(0, 3), Parent = DropdownScroll})
+                local Dropdown = {Valores = config.Valores, Valor = config.Default or config.Valores[1], Aberto = false, Botoes = {}}
                 
-                local Dropdown = {Values = config.Values, Value = config.Default or config.Values[1], Opened = false, Buttons = {}}
-                
-                local function UpdateHolderPosition()
-                    local posY = DropdownInner.AbsolutePosition.Y + 35
-                    if game.Workspace.CurrentCamera.ViewportSize.Y - posY < 392 then
-                        posY = DropdownInner.AbsolutePosition.Y - 392
+                local function AtualizarPosicao()
+                    local posY = DropdownBtn.AbsolutePosition.Y + 30
+                    if game.Workspace.CurrentCamera.ViewportSize.Y - posY < 200 then
+                        posY = DropdownBtn.AbsolutePosition.Y - 200
                     end
-                    DropdownHolder.Position = UDim2.fromOffset(DropdownInner.AbsolutePosition.X - 1, posY)
+                    DropdownHolder.Position = UDim2.fromOffset(DropdownBtn.AbsolutePosition.X, posY)
                 end
+                DropdownBtn:GetPropertyChangedSignal("AbsolutePosition"):Connect(AtualizarPosicao)
                 
-                DropdownInner:GetPropertyChangedSignal("AbsolutePosition"):Connect(UpdateHolderPosition)
-                
-                local function BuildDropdownList()
+                local function ConstruirLista()
                     for _, child in pairs(DropdownScroll:GetChildren()) do
                         if not child:IsA("UIListLayout") then child:Destroy() end
                     end
                     
-                    for _, value in pairs(Dropdown.Values) do
-                        local Button = New("TextButton", {Size = UDim2.new(1, -5, 0, 32), BackgroundTransparency = 1, Text = "", Parent = DropdownScroll})
-                        local Selector = New("Frame", {Size = UDim2.fromOffset(4, 14), BackgroundColor3 = Color3.fromRGB(96, 205, 255), Position = UDim2.fromOffset(-1, 16), AnchorPoint = Vector2.new(0, 0.5), Parent = Button})
-                        New("UICorner", {CornerRadius = UDim.new(0, 2), Parent = Selector})
-                        local Label = New("TextLabel", {Text = value, TextColor3 = Color3.fromRGB(200, 200, 200), TextSize = 13, FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"), TextXAlignment = Enum.TextXAlignment.Left, Size = UDim2.fromScale(1, 1), Position = UDim2.fromOffset(10, 0), BackgroundTransparency = 1, Parent = Button})
+                    for _, valor in pairs(Dropdown.Valores) do
+                        local Btn = New("TextButton", {
+                            Size = UDim2.new(1, -5, 0, 28),
+                            BackgroundColor3 = Dropdown.Valor == valor and Color3.fromRGB(60, 60, 60) or Color3.fromRGB(50, 50, 50),
+                            Text = valor,
+                            TextColor3 = Color3.fromRGB(230, 230, 230),
+                            TextSize = 12,
+                            FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"),
+                            Parent = DropdownScroll
+                        })
+                        New("UICorner", {CornerRadius = UDim.new(0, 4), Parent = Btn})
                         
-                        local Selected = Dropdown.Value == value
-                        local BackMotor, SetBackTransparency = Motor(Selected and 0.89 or 1, Button)
-                        local SelMotor, SetSelTransparency = Motor(Selected and 0 or 1, Selector)
-                        local SizeMotor = Flipper.SingleMotor.new(Selected and 14 or 6)
-                        SizeMotor:onStep(function(val) Selector.Size = UDim2.new(0, 4, 0, val) end)
-                        
-                        Button.MouseEnter:Connect(function() SetBackTransparency(Selected and 0.85 or 0.89) end)
-                        Button.MouseLeave:Connect(function() SetBackTransparency(Selected and 0.89 or 1) end)
-                        Button.MouseButton1Down:Connect(function() SetBackTransparency(0.92) end)
-                        Button.MouseButton1Up:Connect(function() SetBackTransparency(Selected and 0.85 or 0.89) end)
-                        Button.MouseButton1Click:Connect(function()
-                            Dropdown.Value = value
-                            DropdownDisplay.Text = value
-                            for _, btn in pairs(Dropdown.Buttons) do btn:Update() end
-                            Dropdown:Close()
-                            config.Callback(value)
+                        Btn.MouseButton1Click:Connect(function()
+                            Dropdown.Valor = valor
+                            DropdownBtn.Text = valor
+                            for _, b in pairs(Dropdown.Botoes) do b.BackgroundColor3 = Color3.fromRGB(50, 50, 50) end
+                            Btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+                            Dropdown:Fechar()
+                            config.Callback(valor)
                         end)
                         
-                        local Btn = {
-                            Update = function()
-                                Selected = Dropdown.Value == value
-                                SetBackTransparency(Selected and 0.89 or 1)
-                                SetSelTransparency(Selected and 0 or 1)
-                                SizeMotor:setGoal(Spring(Selected and 14 or 6, {frequency = 6}))
-                            end
-                        }
-                        Dropdown.Buttons[Button] = Btn
+                        Dropdown.Botoes[Btn] = Btn
                     end
                     
-                    DropdownScroll.CanvasSize = UDim2.fromOffset(0, DropdownListLayout.AbsoluteContentSize.Y)
-                    DropdownHolder.Size = UDim2.fromOffset(170, math.min(DropdownListLayout.AbsoluteContentSize.Y + 10, 392))
-                    UpdateHolderPosition()
+                    DropdownScroll.CanvasSize = UDim2.fromOffset(0, DropdownLayout.AbsoluteContentSize.Y)
+                    DropdownHolder.Size = UDim2.fromOffset(145, math.min(DropdownLayout.AbsoluteContentSize.Y + 8, 200))
+                    AtualizarPosicao()
                 end
                 
-                Dropdown.Open = function()
-                    Dropdown.Opened = true
+                Dropdown.Abrir = function()
+                    Dropdown.Aberto = true
                     DropdownHolder.Visible = true
-                    TweenService:Create(DropdownHolder, TweenInfo.new(0.2, Enum.EasingStyle.Quart), {Size = UDim2.fromOffset(170, math.min(DropdownListLayout.AbsoluteContentSize.Y + 10, 392))}):Play()
+                    TweenService:Create(DropdownHolder, TweenInfo.new(0.2, Enum.EasingStyle.Quart), {Size = UDim2.fromOffset(145, math.min(DropdownLayout.AbsoluteContentSize.Y + 8, 200))}):Play()
                 end
                 
-                Dropdown.Close = function()
-                    Dropdown.Opened = false
-                    TweenService:Create(DropdownHolder, TweenInfo.new(0.2, Enum.EasingStyle.Quart), {Size = UDim2.fromOffset(170, 0)}):Play()
+                Dropdown.Fechar = function()
+                    Dropdown.Aberto = false
+                    TweenService:Create(DropdownHolder, TweenInfo.new(0.2, Enum.EasingStyle.Quart), {Size = UDim2.fromOffset(145, 0)}):Play()
                     task.wait(0.2)
                     DropdownHolder.Visible = false
                 end
                 
-                DropdownInner.MouseButton1Click:Connect(function()
-                    if Dropdown.Opened then Dropdown:Close() else Dropdown:Open() end
+                DropdownBtn.MouseButton1Click:Connect(function()
+                    if Dropdown.Aberto then Dropdown:Fechar() else Dropdown:Abrir() end
                 end)
                 
-                game:GetService("UserInputService").InputBegan:Connect(function(input)
-                    if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Dropdown.Opened then
-                        local mouse = game.Players.LocalPlayer:GetMouse()
-                        local absPos, absSize = DropdownHolder.AbsolutePosition, DropdownHolder.AbsoluteSize
-                        if mouse.X < absPos.X or mouse.X > absPos.X + absSize.X or mouse.Y < absPos.Y or mouse.Y > absPos.Y + absSize.Y then
-                            Dropdown:Close()
+                UserInputService.InputBegan:Connect(function(input)
+                    if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Dropdown.Aberto then
+                        local mouse = Players.LocalPlayer:GetMouse()
+                        local pos, size = DropdownHolder.AbsolutePosition, DropdownHolder.AbsoluteSize
+                        if mouse.X < pos.X or mouse.X > pos.X + size.X or mouse.Y < pos.Y or mouse.Y > pos.Y + size.Y then
+                            Dropdown:Fechar()
                         end
                     end
                 end)
                 
-                BuildDropdownList()
-                SectionContainer.Size = UDim2.new(1, 0, 0, SectionContainer.Size.Y.Offset + 50)
+                ConstruirLista()
+                SecaoConteudo.Size = UDim2.new(1, 0, 0, SecaoConteudo.Size.Y.Offset + 44)
             end
             
-            return Section
+            function Secao:NovoTextbox(config)
+                local TextboxFrame = New("Frame", {
+                    Size = UDim2.new(1, -10, 0, 38),
+                    Position = UDim2.new(0, 5, 0, #SecaoConteudo:GetChildren() * 44),
+                    BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+                    Parent = SecaoConteudo
+                })
+                New("UICorner", {CornerRadius = UDim.new(0, 6), Parent = TextboxFrame})
+                
+                New("TextLabel", {
+                    Text = config.Nome,
+                    TextColor3 = Color3.fromRGB(230, 230, 230),
+                    TextSize = 13,
+                    FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"),
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Size = UDim2.new(1, -155, 1, 0),
+                    Position = UDim2.new(0, 8, 0, 0),
+                    BackgroundTransparency = 1,
+                    Parent = TextboxFrame
+                })
+                
+                local Textbox = New("TextBox", {
+                    Size = UDim2.fromOffset(145, 28),
+                    Position = UDim2.new(1, -150, 0.5, -14),
+                    BackgroundColor3 = Color3.fromRGB(50, 50, 50),
+                    Text = "",
+                    TextColor3 = Color3.fromRGB(230, 230, 230),
+                    TextSize = 12,
+                    FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"),
+                    ClearTextOnFocus = false,
+                    Parent = TextboxFrame
+                })
+                New("UICorner", {CornerRadius = UDim.new(0, 5), Parent = Textbox})
+                
+                Textbox:GetPropertyChangedSignal("Text"):Connect(function()
+                    local maxChars = 18
+                    if #Textbox.Text > maxChars then
+                        Textbox.Text = Textbox.Text:sub(#Textbox.Text - maxChars + 1, #Textbox.Text)
+                    end
+                end)
+                
+                Textbox.FocusLost:Connect(function()
+                    config.Callback(Textbox.Text)
+                end)
+                
+                SecaoConteudo.Size = UDim2.new(1, 0, 0, SecaoConteudo.Size.Y.Offset + 44)
+            end
+            
+            return Secao
         end
         
-        return Tab
+        return Aba
     end
     
-    function Window:SelectTab(tabIndex)
-        local tab = self.Tabs[tabIndex]
-        if not tab then return end
+    function Window:SelecionarAba(index)
+        local aba = self.Abas[index]
+        if not aba then return end
         
-        self.SelectedTab = tabIndex
-        for _, t in pairs(self.Tabs) do
-            t.SetTransparency(1)
-            t.Selected = false
+        self.AbaSelecionada = index
+        for _, a in pairs(self.Abas) do
+            a.Botao.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
         end
-        tab.SetTransparency(0.89)
-        tab.Selected = true
+        aba.Botao.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
         
-        for _, c in pairs(self.Containers) do c.Visible = false end
-        self.Containers[tabIndex].Visible = true
+        for _, c in pairs(self.Conteudos) do c.Visible = false end
+        self.Conteudos[index].Visible = true
     end
     
     return Window
 end
 
-return Linux
+return NovaLib
