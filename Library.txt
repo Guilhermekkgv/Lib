@@ -113,7 +113,7 @@ function Linux:Create(config)
         function Tab:Toggle(name, default, callback)
             local ToggleFrame = Instance.new("Frame")
             ToggleFrame.Size = UDim2.new(1, -10, 0, 40)
-            ToggleFrame.Position = UDim2.new(0, 5, 0, #TabContent:GetChildren() * 45)
+            ToggleFrame.Position = UDim2.new(0, 5, 0, #TabContent:GetChildren() * 50)
             ToggleFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             ToggleFrame.BorderSizePixel = 0
             ToggleFrame.Parent = TabContent
@@ -171,7 +171,7 @@ function Linux:Create(config)
                 end
             end)
             
-            local newHeight = ToggleFrame.Position.Y.Offset + ToggleFrame.Size.Y.Offset
+            local newHeight = ToggleFrame.Position.Y.Offset + ToggleFrame.Size.Y.Offset + 10
             TabContent.Size = UDim2.new(1, 0, 0, newHeight)
             if TabContent.Visible then
                 Content.CanvasSize = UDim2.new(0, 0, 0, newHeight)
@@ -181,7 +181,7 @@ function Linux:Create(config)
         function Tab:Button(name, callback)
             local ButtonFrame = Instance.new("TextButton")
             ButtonFrame.Size = UDim2.new(1, -10, 0, 40)
-            ButtonFrame.Position = UDim2.new(0, 5, 0, #TabContent:GetChildren() * 45)
+            ButtonFrame.Position = UDim2.new(0, 5, 0, #TabContent:GetChildren() * 50)
             ButtonFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             ButtonFrame.BorderSizePixel = 0
             ButtonFrame.Text = name
@@ -198,7 +198,7 @@ function Linux:Create(config)
                 callback()
             end)
             
-            local newHeight = ButtonFrame.Position.Y.Offset + ButtonFrame.Size.Y.Offset
+            local newHeight = ButtonFrame.Position.Y.Offset + ButtonFrame.Size.Y.Offset + 10
             TabContent.Size = UDim2.new(1, 0, 0, newHeight)
             if TabContent.Visible then
                 Content.CanvasSize = UDim2.new(0, 0, 0, newHeight)
@@ -208,7 +208,7 @@ function Linux:Create(config)
         function Tab:Slider(name, min, max, default, callback)
             local SliderFrame = Instance.new("Frame")
             SliderFrame.Size = UDim2.new(1, -10, 0, 40)
-            SliderFrame.Position = UDim2.new(0, 5, 0, #TabContent:GetChildren() * 45)
+            SliderFrame.Position = UDim2.new(0, 5, 0, #TabContent:GetChildren() * 50)
             SliderFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             SliderFrame.BorderSizePixel = 0
             SliderFrame.Parent = TabContent
@@ -287,31 +287,7 @@ function Linux:Create(config)
                 end
             end)
             
-            local newHeight = SliderFrame.Position.Y.Offset + SliderFrame.Size.Y.Offset
-            TabContent.Size = UDim2.new(1, 0, 0, newHeight)
-            if TabContent.Visible then
-                Content.CanvasSize = UDim2.new(0, 0, 0, newHeight)
-            end
-        end
-        
-        function Tab:Label(name)
-            local LabelFrame = Instance.new("TextLabel")
-            LabelFrame.Size = UDim2.new(1, -10, 0, 30)
-            LabelFrame.Position = UDim2.new(0, 5, 0, #TabContent:GetChildren() * 45)
-            LabelFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-            LabelFrame.BorderSizePixel = 0
-            LabelFrame.Text = name
-            LabelFrame.TextColor3 = Color3.fromRGB(255, 255, 255)
-            LabelFrame.TextSize = 16
-            LabelFrame.Font = Enum.Font.GothamBold
-            LabelFrame.TextXAlignment = Enum.TextXAlignment.Left
-            LabelFrame.Parent = TabContent
-            
-            local LabelCorner = Instance.new("UICorner")
-            LabelCorner.CornerRadius = UDim.new(0, 8)
-            LabelCorner.Parent = LabelFrame
-            
-            local newHeight = LabelFrame.Position.Y.Offset + LabelFrame.Size.Y.Offset
+            local newHeight = SliderFrame.Position.Y.Offset + SliderFrame.Size.Y.Offset + 10
             TabContent.Size = UDim2.new(1, 0, 0, newHeight)
             if TabContent.Visible then
                 Content.CanvasSize = UDim2.new(0, 0, 0, newHeight)
@@ -321,7 +297,7 @@ function Linux:Create(config)
         function Tab:Textbox(name, default, callback)
             local TextboxFrame = Instance.new("Frame")
             TextboxFrame.Size = UDim2.new(1, -10, 0, 40)
-            TextboxFrame.Position = UDim2.new(0, 5, 0, #TabContent:GetChildren() * 45)
+            TextboxFrame.Position = UDim2.new(0, 5, 0, #TabContent:GetChildren() * 50)
             TextboxFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             TextboxFrame.BorderSizePixel = 0
             TextboxFrame.Parent = TabContent
@@ -350,6 +326,7 @@ function Linux:Create(config)
             Textbox.TextColor3 = Color3.fromRGB(255, 255, 255)
             Textbox.TextSize = 14
             Textbox.Font = Enum.Font.Gotham
+            Textbox.TextTruncate = Enum.TextTruncate.AtEnd
             Textbox.Parent = TextboxFrame
             
             local TextboxCornerInner = Instance.new("UICorner")
@@ -360,7 +337,7 @@ function Linux:Create(config)
                 callback(Textbox.Text)
             end)
             
-            local newHeight = TextboxFrame.Position.Y.Offset + TextboxFrame.Size.Y.Offset
+            local newHeight = TextboxFrame.Position.Y.Offset + TextboxFrame.Size.Y.Offset + 10
             TabContent.Size = UDim2.new(1, 0, 0, newHeight)
             if TabContent.Visible then
                 Content.CanvasSize = UDim2.new(0, 0, 0, newHeight)
@@ -370,7 +347,7 @@ function Linux:Create(config)
         function Tab:Dropdown(name, options, default, callback)
             local DropdownFrame = Instance.new("Frame")
             DropdownFrame.Size = UDim2.new(1, -10, 0, 40)
-            DropdownFrame.Position = UDim2.new(0, 5, 0, #TabContent:GetChildren() * 45)
+            DropdownFrame.Position = UDim2.new(0, 5, 0, #TabContent:GetChildren() * 50)
             DropdownFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             DropdownFrame.BorderSizePixel = 0
             DropdownFrame.Parent = TabContent
@@ -405,12 +382,14 @@ function Linux:Create(config)
             DropdownCornerInner.CornerRadius = UDim.new(0, 6)
             DropdownCornerInner.Parent = DropdownButton
             
-            local DropdownList = Instance.new("Frame")
+            local DropdownList = Instance.new("ScrollingFrame")
             DropdownList.Size = UDim2.new(0, 150, 0, 0)
             DropdownList.Position = UDim2.new(1, -165, 1, 0)
             DropdownList.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             DropdownList.BorderSizePixel = 0
             DropdownList.Visible = false
+            DropdownList.ScrollBarThickness = 4
+            DropdownList.CanvasSize = UDim2.new(0, 0, 0, 0)
             DropdownList.Parent = DropdownFrame
             
             local ListCorner = Instance.new("UICorner")
@@ -443,10 +422,12 @@ function Linux:Create(config)
                 end)
             end
             
+            DropdownList.CanvasSize = UDim2.new(0, 0, 0, #options * 25)
+            
             DropdownButton.MouseButton1Click:Connect(function()
                 isOpen = not isOpen
                 if isOpen then
-                    DropdownList.Size = UDim2.new(0, 150, 0, math.min(#options * 25, 100))
+                    DropdownList.Size = UDim2.new(0, 150, 0, math.min(#options * 25, 150))
                     DropdownList.Visible = true
                 else
                     DropdownList.Size = UDim2.new(0, 150, 0, 0)
@@ -454,7 +435,7 @@ function Linux:Create(config)
                 end
             end)
             
-            local newHeight = DropdownFrame.Position.Y.Offset + DropdownFrame.Size.Y.Offset
+            local newHeight = DropdownFrame.Position.Y.Offset + DropdownFrame.Size.Y.Offset + 10
             TabContent.Size = UDim2.new(1, 0, 0, newHeight)
             if TabContent.Visible then
                 Content.CanvasSize = UDim2.new(0, 0, 0, newHeight)
