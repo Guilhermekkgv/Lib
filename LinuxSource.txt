@@ -929,6 +929,7 @@ function Linux.Create(config)
                 tab.Text.TextColor3 = Color3.fromRGB(150, 150, 150)
                 tab.Button.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
                 tab.Button.BackgroundTransparency = 1
+                tab.Button.BorderSizePixel = 1
                 
                 if tab.Icon then
                     tab.Icon.ImageColor3 = Color3.fromRGB(150, 150, 150)
@@ -938,8 +939,10 @@ function Linux.Create(config)
             TabContent.Visible = true
             TitleFrame.Visible = true
             TabText.TextColor3 = Color3.fromRGB(255, 255, 255)
-            TabBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+            TabBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
             TabBtn.BackgroundTransparency = 0
+            TabBtn.BorderSizePixel = 1
+            TabBtn.BorderColor3 = Color3.fromRGB(39, 39, 42)
             
             if TabIcon then
                 TabIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
