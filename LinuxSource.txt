@@ -814,13 +814,6 @@ function Linux.Create(config)
             CornerRadius = UDim.new(0, 4)
         })
         
-        local TabStroke = Linux.Instance("UIStroke", {
-            Parent = TabBtn,
-            Color = Color3.fromRGB(39, 39, 42),
-            Thickness = 1,
-            Transparency = 1
-        })
-        
         local TabSelectionIndicator = Linux.Instance("Frame", {
             Parent = TabBtn,
             BackgroundColor3 = Color3.fromRGB(255, 255, 255),
@@ -936,7 +929,7 @@ function Linux.Create(config)
                 tab.Text.TextColor3 = Color3.fromRGB(150, 150, 150)
                 tab.Button.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
                 tab.Button.BackgroundTransparency = 1
-                tab.Stroke.Transparency = 1
+                tab.Button.BorderSizePixel = 0
                 
                 if tab.Icon then
                     tab.Icon.ImageColor3 = Color3.fromRGB(150, 150, 150)
@@ -948,7 +941,8 @@ function Linux.Create(config)
             TabText.TextColor3 = Color3.fromRGB(255, 255, 255)
             TabBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
             TabBtn.BackgroundTransparency = 0
-            TabStroke.Transparency = 0
+            TabBtn.BorderSizePixel = 1
+            TabBtn.BorderColor3 = Color3.fromRGB(39, 39, 42)
             
             if TabIcon then
                 TabIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
@@ -968,7 +962,6 @@ function Linux.Create(config)
             Content = TabContent,
             TitleFrame = TitleFrame,
             Indicator = TabSelectionIndicator,
-            Stroke = TabStroke,
             Elements = {}
         }
         
@@ -1835,17 +1828,6 @@ function Linux.Create(config)
                 ZIndex = 3
             })
             
-            Linux.Instance("UICorner", {
-                Parent = TextBox,
-                CornerRadius = UDim.new(0, 4)
-            })
-            
-            Linux.Instance("UIStroke", {
-                Parent = TextBox,
-                Color = Color3.fromRGB(39, 39, 42),
-                Thickness = 1
-            })
-            
             Linux.Instance("UIPadding", {
                 Parent = TextBox,
                 PaddingLeft = UDim.new(0, 6),
@@ -2328,17 +2310,6 @@ function Linux.Create(config)
                 TextSize = 12,
                 ZIndex = 3,
                 AutoButtonColor = false
-            })
-            
-            Linux.Instance("UICorner", {
-                Parent = KeybindButton,
-                CornerRadius = UDim.new(0, 4)
-            })
-            
-            Linux.Instance("UIStroke", {
-                Parent = KeybindButton,
-                Color = Color3.fromRGB(39, 39, 42),
-                Thickness = 1
             })
             
             local inputConnection = nil
